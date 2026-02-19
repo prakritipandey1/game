@@ -2,52 +2,64 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Cropped Scoreboard</title>
+<title>Live Scoreboard</title>
 
 <style>
-body {
-    margin: 0;
+body{
+    margin:0;
+    overflow:hidden;
+    background:transparent;
 }
 
-#cropBox {
-    overflow: hidden;
-    position: relative;
+#box{
+    overflow:hidden;
+    position:relative;
 }
 
-#scoreFrame {
-    position: absolute;
-    border: none;
+#frame{
+    position:absolute;
+    border:none;
+    transform-origin: top left;
 }
 </style>
 </head>
 
 <body>
 
-<div id="cropBox">
-    <iframe 
-        id="scoreFrame"
+<div id="box">
+    <iframe
+        id="frame"
         src="https://cricketfastliveline.in/live-score/afg-vs-can-39th-match-t20-icc-mens-t20-world-cup-2026/a-rz--cricket--h21993773127846465576"
-        width="1200"
-        height="2000">
+        width="1400"
+        height="2500">
     </iframe>
 </div>
 
 <script>
+
 const params = new URLSearchParams(window.location.search);
 
 const top = params.get("top") || 0;
 const left = params.get("left") || 0;
-const width = params.get("width") || 600;
-const height = params.get("height") || 400;
+const bottom = params.get("bottom") || 0;
+const right = params.get("right") || 0;
+const zoom = params.get("zoom") || 1;
 
-const frame = document.getElementById("scoreFrame");
-const cropBox = document.getElementById("cropBox");
+const frame = document.getElementById("frame");
+const box = document.getElementById("box");
 
 frame.style.top = "-" + top + "px";
 frame.style.left = "-" + left + "px";
+frame.style.transform = "scale(" + zoom + ")";
 
-cropBox.style.width = width + "px";
-cropBox.style.height = height + "px";
+box.style.width = (800 - right) + "px";
+box.style.height = (450 - bottom) + "px";
+
+// Auto refresh every 20 seconds for stream sync
+setInterval(()=>{
+    frame.src = frame.src;
+},20000);
+
 </script>
 
 </body>
