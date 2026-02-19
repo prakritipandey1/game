@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Scoreboard Crop Tool</title>
+
+<style>
+body {
+    font-family: Arial;
+    text-align: center;
+}
+
+#cropBox {
+    width: 600px;
+    height: 400px;
+    overflow: hidden;
+    border: 3px solid black;
+    margin: 20px auto;
+    position: relative;
+}
+
+#scoreFrame {
+    position: absolute;
+    border: none;
+}
+
+.controls {
+    width: 600px;
+    margin: auto;
+    text-align: left;
+}
+
+input {
+    width: 100%;
+}
+</style>
+</head>
+
+<body>
+
+<h2>Scoreboard Crop Tool</h2>
+
+<div id="cropBox">
+    <iframe 
+        id="scoreFrame"
+        src="https://cricketfastliveline.in/live-score/afg-vs-can-39th-match-t20-icc-mens-t20-world-cup-2026/a-rz--cricket--h21993773127846465576"
+        width="1200"
+        height="2000">
+    </iframe>
+</div>
+
+<div class="controls">
+    <label>Top Crop</label>
+    <input type="range" id="topRange" min="0" max="1500" value="0">
+
+    <label>Left Crop</label>
+    <input type="range" id="leftRange" min="0" max="1000" value="0">
+
+    <label>Width</label>
+    <input type="range" id="widthRange" min="200" max="1200" value="600">
+
+    <label>Height</label>
+    <input type="range" id="heightRange" min="200" max="2000" value="400">
+
+    <br><br>
+    <button onclick="generateLink()">Generate Cropped Page</button>
+
+    <p id="outputLink"></p>
+</div>
+
+<script>
+
+const frame = document.getElementById("scoreFrame");
+const cropBox = document.getElementById("cropBox");
+
+function updateCrop() {
+    const top = document.getElementById("topRange").value;
+    const left = document.getElementById("leftRange").value;
+    const width = document.getElementById("widthRange").value;
+    const height = document.getElementById("heightRange").value;
+
+    frame.style.top = "-" + top + "px";
+    frame.style.left = "-" + left + "px";
+
+    cropBox.style.width = width + "px";
+    cropBox.style.height = height + "px";
+}
+
+document.querySelectorAll("input").forEach(input => {
+    input.addEventListener("input", updateCrop);
+});
+
+function generateLink() {
+    const top = topRange.value;
+    const left = leftRange.value;
+    const width = widthRange.value;
+    const height = heightRange.value;
+
+    const url = `cropped.html?top=${top}&left=${left}&width=${width}&height=${height}`;
+    document.getElementById("outputLink").innerHTML =
+        `<a href="${url}" target="_blank">${url}</a>`;
+}
+
+updateCrop();
+
+</script>
+
+</body>
+</html>
