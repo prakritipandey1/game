@@ -2,162 +2,43 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Visual Crop Editor</title>
+<title>Direct Scoreboard Embed</title>
 
 <style>
-body{
-    margin:0;
-    background:#111;
-    font-family:Arial;
-    color:white;
-    text-align:center;
+body {
+    margin: 0;
+    overflow: hidden;
+    background-color: transparent;
 }
 
-#container{
-    width:1000px;
-    height:600px;
-    margin:20px auto;
-    position:relative;
-    overflow:hidden;
-    border:3px solid #00ffcc;
-    background:black;
+#container {
+    width: 800px; /* Your cropped width */
+    height: 450px; /* Your cropped height */
+    overflow: hidden;
+    position: relative;
 }
 
-iframe{
-    position:absolute;
-    top:0;
-    left:0;
-    width:1400px;
-    height:2500px;
-    border:none;
+#iframe {
+    position: absolute;
+    top: -274px;   /* Adjust top offset */
+    left: -217px;  /* Adjust left offset */
+    width: 1400px; /* Original width of the page */
+    height: 2500px; /* Original height of the page */
+    transform: scale(0.89); /* Zoom out to adjust */
     transform-origin: top left;
-}
-
-#cropBox{
-    position:absolute;
-    border:2px dashed #00ffcc;
-    box-sizing:border-box;
-    cursor:move;
-}
-
-.handle{
-    width:12px;
-    height:12px;
-    background:#00ffcc;
-    position:absolute;
-}
-
-.handle.nw{ top:-6px; left:-6px; cursor:nwse-resize;}
-.handle.ne{ top:-6px; right:-6px; cursor:nesw-resize;}
-.handle.sw{ bottom:-6px; left:-6px; cursor:nesw-resize;}
-.handle.se{ bottom:-6px; right:-6px; cursor:nwse-resize;}
-
-.controls{
-    margin-top:10px;
-}
-button{
-    padding:8px 15px;
-    background:#00ffcc;
-    border:none;
-    cursor:pointer;
+    border: none;
 }
 </style>
 </head>
+
 <body>
 
-<h2>🔥 Canva Style Crop Tool</h2>
-
 <div id="container">
-    <iframe id="frame"
-    src="https://cricketfastliveline.in/live-score/afg-vs-can-39th-match-t20-icc-mens-t20-world-cup-2026/a-rz--cricket--h21993773127846465576"></iframe>
-
-    <div id="cropBox" style="top:100px;left:100px;width:600px;height:250px;">
-        <div class="handle nw"></div>
-        <div class="handle ne"></div>
-        <div class="handle sw"></div>
-        <div class="handle se"></div>
-    </div>
+    <iframe 
+        id="iframe" 
+        src="https://cricketfastliveline.in/live-score/afg-vs-can-39th-match-t20-icc-mens-t20-world-cup-2026/a-rz--cricket--h21993773127846465576">
+    </iframe>
 </div>
-
-<div class="controls">
-    Zoom:
-    <input type="range" id="zoom" min="0.5" max="2" step="0.01" value="1">
-    <button onclick="generate()">Generate Cropped Page</button>
-    <p id="output"></p>
-</div>
-
-<script>
-
-const cropBox = document.getElementById("cropBox");
-const frame = document.getElementById("frame");
-let isDragging=false, isResizing=false, currentHandle=null;
-let startX, startY, startWidth, startHeight, startTop, startLeft;
-
-cropBox.addEventListener("mousedown", e=>{
-    if(e.target.classList.contains("handle")){
-        isResizing=true;
-        currentHandle=e.target;
-    }else{
-        isDragging=true;
-    }
-    startX=e.clientX;
-    startY=e.clientY;
-    startWidth=cropBox.offsetWidth;
-    startHeight=cropBox.offsetHeight;
-    startTop=cropBox.offsetTop;
-    startLeft=cropBox.offsetLeft;
-});
-
-document.addEventListener("mousemove", e=>{
-    if(isDragging){
-        cropBox.style.top=startTop+(e.clientY-startY)+"px";
-        cropBox.style.left=startLeft+(e.clientX-startX)+"px";
-    }
-    if(isResizing){
-        if(currentHandle.classList.contains("se")){
-            cropBox.style.width=startWidth+(e.clientX-startX)+"px";
-            cropBox.style.height=startHeight+(e.clientY-startY)+"px";
-        }
-        if(currentHandle.classList.contains("sw")){
-            cropBox.style.width=startWidth-(e.clientX-startX)+"px";
-            cropBox.style.height=startHeight+(e.clientY-startY)+"px";
-            cropBox.style.left=startLeft+(e.clientX-startX)+"px";
-        }
-        if(currentHandle.classList.contains("ne")){
-            cropBox.style.width=startWidth+(e.clientX-startX)+"px";
-            cropBox.style.height=startHeight-(e.clientY-startY)+"px";
-            cropBox.style.top=startTop+(e.clientY-startY)+"px";
-        }
-        if(currentHandle.classList.contains("nw")){
-            cropBox.style.width=startWidth-(e.clientX-startX)+"px";
-            cropBox.style.height=startHeight-(e.clientY-startY)+"px";
-            cropBox.style.left=startLeft+(e.clientX-startX)+"px";
-            cropBox.style.top=startTop+(e.clientY-startY)+"px";
-        }
-    }
-});
-
-document.addEventListener("mouseup", ()=>{
-    isDragging=false;
-    isResizing=false;
-});
-
-zoom.addEventListener("input", ()=>{
-    frame.style.transform="scale("+zoom.value+")";
-});
-
-function generate(){
-    const top=cropBox.offsetTop;
-    const left=cropBox.offsetLeft;
-    const width=cropBox.offsetWidth;
-    const height=cropBox.offsetHeight;
-    const z=zoom.value;
-
-    const url=`cropped.html?top=${top}&left=${left}&width=${width}&height=${height}&zoom=${z}`;
-    output.innerHTML=`<a href="${url}" target="_blank" style="color:#00ffcc">${url}</a>`;
-}
-
-</script>
 
 </body>
 </html>
