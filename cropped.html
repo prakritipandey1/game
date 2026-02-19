@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Cropped Scoreboard</title>
+
+<style>
+body {
+    margin: 0;
+}
+
+#cropBox {
+    overflow: hidden;
+    position: relative;
+}
+
+#scoreFrame {
+    position: absolute;
+    border: none;
+}
+</style>
+</head>
+
+<body>
+
+<div id="cropBox">
+    <iframe 
+        id="scoreFrame"
+        src="https://cricketfastliveline.in/live-score/afg-vs-can-39th-match-t20-icc-mens-t20-world-cup-2026/a-rz--cricket--h21993773127846465576"
+        width="1200"
+        height="2000">
+    </iframe>
+</div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+
+const top = params.get("top") || 0;
+const left = params.get("left") || 0;
+const width = params.get("width") || 600;
+const height = params.get("height") || 400;
+
+const frame = document.getElementById("scoreFrame");
+const cropBox = document.getElementById("cropBox");
+
+frame.style.top = "-" + top + "px";
+frame.style.left = "-" + left + "px";
+
+cropBox.style.width = width + "px";
+cropBox.style.height = height + "px";
+</script>
+
+</body>
+</html>
