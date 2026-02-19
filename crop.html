@@ -2,124 +2,160 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Scoreboard Crop Editor</title>
+<title>Visual Crop Editor</title>
 
 <style>
 body{
-    font-family: Arial;
+    margin:0;
     background:#111;
+    font-family:Arial;
     color:white;
     text-align:center;
 }
 
-#previewBox{
-    width:800px;
-    height:450px;
-    overflow:hidden;
+#container{
+    width:1000px;
+    height:600px;
     margin:20px auto;
-    border:3px solid #00ffcc;
     position:relative;
+    overflow:hidden;
+    border:3px solid #00ffcc;
     background:black;
 }
 
-#frame{
+iframe{
     position:absolute;
+    top:0;
+    left:0;
+    width:1400px;
+    height:2500px;
     border:none;
     transform-origin: top left;
 }
 
+#cropBox{
+    position:absolute;
+    border:2px dashed #00ffcc;
+    box-sizing:border-box;
+    cursor:move;
+}
+
+.handle{
+    width:12px;
+    height:12px;
+    background:#00ffcc;
+    position:absolute;
+}
+
+.handle.nw{ top:-6px; left:-6px; cursor:nwse-resize;}
+.handle.ne{ top:-6px; right:-6px; cursor:nesw-resize;}
+.handle.sw{ bottom:-6px; left:-6px; cursor:nesw-resize;}
+.handle.se{ bottom:-6px; right:-6px; cursor:nwse-resize;}
+
 .controls{
-    width:800px;
-    margin:auto;
-    text-align:left;
+    margin-top:10px;
 }
-
-label{
-    font-size:14px;
-}
-
-input[type=range]{
-    width:100%;
-}
-
 button{
     padding:8px 15px;
-    margin:5px;
     background:#00ffcc;
     border:none;
     cursor:pointer;
 }
 </style>
 </head>
-
 <body>
 
-<h2>🔥 Scoreboard Crop Editor</h2>
+<h2>🔥 Canva Style Crop Tool</h2>
 
-<div id="previewBox">
-    <iframe 
-        id="frame"
-        src="https://cricketfastliveline.in/live-score/afg-vs-can-39th-match-t20-icc-mens-t20-world-cup-2026/a-rz--cricket--h21993773127846465576"
-        width="1400"
-        height="2500">
-    </iframe>
+<div id="container">
+    <iframe id="frame"
+    src="https://cricketfastliveline.in/live-score/afg-vs-can-39th-match-t20-icc-mens-t20-world-cup-2026/a-rz--cricket--h21993773127846465576"></iframe>
+
+    <div id="cropBox" style="top:100px;left:100px;width:600px;height:250px;">
+        <div class="handle nw"></div>
+        <div class="handle ne"></div>
+        <div class="handle sw"></div>
+        <div class="handle se"></div>
+    </div>
 </div>
 
 <div class="controls">
-
-<label>Top Crop</label>
-<input type="range" id="top" min="0" max="2000" value="0">
-
-<label>Left Crop</label>
-<input type="range" id="left" min="0" max="1400" value="0">
-
-<label>Bottom Crop</label>
-<input type="range" id="bottom" min="0" max="2000" value="0">
-
-<label>Right Crop</label>
-<input type="range" id="right" min="0" max="1400" value="0">
-
-<label>Zoom</label>
-<input type="range" id="zoom" min="0.5" max="2" step="0.01" value="1">
-
-<br>
-
-<button onclick="generate()">Generate Cropped Page</button>
-
-<p id="result"></p>
-
+    Zoom:
+    <input type="range" id="zoom" min="0.5" max="2" step="0.01" value="1">
+    <button onclick="generate()">Generate Cropped Page</button>
+    <p id="output"></p>
 </div>
 
 <script>
 
+const cropBox = document.getElementById("cropBox");
 const frame = document.getElementById("frame");
-const preview = document.getElementById("previewBox");
+let isDragging=false, isResizing=false, currentHandle=null;
+let startX, startY, startWidth, startHeight, startTop, startLeft;
 
-function update(){
-    const t = top.value;
-    const l = left.value;
-    const b = bottom.value;
-    const r = right.value;
-    const z = zoom.value;
+cropBox.addEventListener("mousedown", e=>{
+    if(e.target.classList.contains("handle")){
+        isResizing=true;
+        currentHandle=e.target;
+    }else{
+        isDragging=true;
+    }
+    startX=e.clientX;
+    startY=e.clientY;
+    startWidth=cropBox.offsetWidth;
+    startHeight=cropBox.offsetHeight;
+    startTop=cropBox.offsetTop;
+    startLeft=cropBox.offsetLeft;
+});
 
-    frame.style.top = "-" + t + "px";
-    frame.style.left = "-" + l + "px";
-    frame.style.transform = "scale(" + z + ")";
+document.addEventListener("mousemove", e=>{
+    if(isDragging){
+        cropBox.style.top=startTop+(e.clientY-startY)+"px";
+        cropBox.style.left=startLeft+(e.clientX-startX)+"px";
+    }
+    if(isResizing){
+        if(currentHandle.classList.contains("se")){
+            cropBox.style.width=startWidth+(e.clientX-startX)+"px";
+            cropBox.style.height=startHeight+(e.clientY-startY)+"px";
+        }
+        if(currentHandle.classList.contains("sw")){
+            cropBox.style.width=startWidth-(e.clientX-startX)+"px";
+            cropBox.style.height=startHeight+(e.clientY-startY)+"px";
+            cropBox.style.left=startLeft+(e.clientX-startX)+"px";
+        }
+        if(currentHandle.classList.contains("ne")){
+            cropBox.style.width=startWidth+(e.clientX-startX)+"px";
+            cropBox.style.height=startHeight-(e.clientY-startY)+"px";
+            cropBox.style.top=startTop+(e.clientY-startY)+"px";
+        }
+        if(currentHandle.classList.contains("nw")){
+            cropBox.style.width=startWidth-(e.clientX-startX)+"px";
+            cropBox.style.height=startHeight-(e.clientY-startY)+"px";
+            cropBox.style.left=startLeft+(e.clientX-startX)+"px";
+            cropBox.style.top=startTop+(e.clientY-startY)+"px";
+        }
+    }
+});
 
-    preview.style.width = (800 - r) + "px";
-    preview.style.height = (450 - b) + "px";
-}
+document.addEventListener("mouseup", ()=>{
+    isDragging=false;
+    isResizing=false;
+});
 
-document.querySelectorAll("input").forEach(el=>{
-    el.addEventListener("input",update);
+zoom.addEventListener("input", ()=>{
+    frame.style.transform="scale("+zoom.value+")";
 });
 
 function generate(){
-    const url = `cropped.html?top=${top.value}&left=${left.value}&bottom=${bottom.value}&right=${right.value}&zoom=${zoom.value}`;
-    result.innerHTML = `<a href="${url}" target="_blank" style="color:#00ffcc">${url}</a>`;
-}
+    const top=cropBox.offsetTop;
+    const left=cropBox.offsetLeft;
+    const width=cropBox.offsetWidth;
+    const height=cropBox.offsetHeight;
+    const z=zoom.value;
 
-update();
+    const url=`cropped.html?top=${top}&left=${left}&width=${width}&height=${height}&zoom=${z}`;
+    output.innerHTML=`<a href="${url}" target="_blank" style="color:#00ffcc">${url}</a>`;
+}
 
 </script>
 
