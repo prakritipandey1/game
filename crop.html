@@ -2,106 +2,124 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Scoreboard Crop Tool</title>
+<title>Scoreboard Crop Editor</title>
 
 <style>
-body {
+body{
     font-family: Arial;
-    text-align: center;
+    background:#111;
+    color:white;
+    text-align:center;
 }
 
-#cropBox {
-    width: 600px;
-    height: 400px;
-    overflow: hidden;
-    border: 3px solid black;
-    margin: 20px auto;
-    position: relative;
+#previewBox{
+    width:800px;
+    height:450px;
+    overflow:hidden;
+    margin:20px auto;
+    border:3px solid #00ffcc;
+    position:relative;
+    background:black;
 }
 
-#scoreFrame {
-    position: absolute;
-    border: none;
+#frame{
+    position:absolute;
+    border:none;
+    transform-origin: top left;
 }
 
-.controls {
-    width: 600px;
-    margin: auto;
-    text-align: left;
+.controls{
+    width:800px;
+    margin:auto;
+    text-align:left;
 }
 
-input {
-    width: 100%;
+label{
+    font-size:14px;
+}
+
+input[type=range]{
+    width:100%;
+}
+
+button{
+    padding:8px 15px;
+    margin:5px;
+    background:#00ffcc;
+    border:none;
+    cursor:pointer;
 }
 </style>
 </head>
 
 <body>
 
-<h2>Scoreboard Crop Tool</h2>
+<h2>🔥 Scoreboard Crop Editor</h2>
 
-<div id="cropBox">
+<div id="previewBox">
     <iframe 
-        id="scoreFrame"
+        id="frame"
         src="https://cricketfastliveline.in/live-score/afg-vs-can-39th-match-t20-icc-mens-t20-world-cup-2026/a-rz--cricket--h21993773127846465576"
-        width="1200"
-        height="2000">
+        width="1400"
+        height="2500">
     </iframe>
 </div>
 
 <div class="controls">
-    <label>Top Crop</label>
-    <input type="range" id="topRange" min="0" max="1500" value="0">
 
-    <label>Left Crop</label>
-    <input type="range" id="leftRange" min="0" max="1000" value="0">
+<label>Top Crop</label>
+<input type="range" id="top" min="0" max="2000" value="0">
 
-    <label>Width</label>
-    <input type="range" id="widthRange" min="200" max="1200" value="600">
+<label>Left Crop</label>
+<input type="range" id="left" min="0" max="1400" value="0">
 
-    <label>Height</label>
-    <input type="range" id="heightRange" min="200" max="2000" value="400">
+<label>Bottom Crop</label>
+<input type="range" id="bottom" min="0" max="2000" value="0">
 
-    <br><br>
-    <button onclick="generateLink()">Generate Cropped Page</button>
+<label>Right Crop</label>
+<input type="range" id="right" min="0" max="1400" value="0">
 
-    <p id="outputLink"></p>
+<label>Zoom</label>
+<input type="range" id="zoom" min="0.5" max="2" step="0.01" value="1">
+
+<br>
+
+<button onclick="generate()">Generate Cropped Page</button>
+
+<p id="result"></p>
+
 </div>
 
 <script>
 
-const frame = document.getElementById("scoreFrame");
-const cropBox = document.getElementById("cropBox");
+const frame = document.getElementById("frame");
+const preview = document.getElementById("previewBox");
 
-function updateCrop() {
-    const top = document.getElementById("topRange").value;
-    const left = document.getElementById("leftRange").value;
-    const width = document.getElementById("widthRange").value;
-    const height = document.getElementById("heightRange").value;
+function update(){
+    const t = top.value;
+    const l = left.value;
+    const b = bottom.value;
+    const r = right.value;
+    const z = zoom.value;
 
-    frame.style.top = "-" + top + "px";
-    frame.style.left = "-" + left + "px";
+    frame.style.top = "-" + t + "px";
+    frame.style.left = "-" + l + "px";
+    frame.style.transform = "scale(" + z + ")";
 
-    cropBox.style.width = width + "px";
-    cropBox.style.height = height + "px";
+    preview.style.width = (800 - r) + "px";
+    preview.style.height = (450 - b) + "px";
 }
 
-document.querySelectorAll("input").forEach(input => {
-    input.addEventListener("input", updateCrop);
+document.querySelectorAll("input").forEach(el=>{
+    el.addEventListener("input",update);
 });
 
-function generateLink() {
-    const top = topRange.value;
-    const left = leftRange.value;
-    const width = widthRange.value;
-    const height = heightRange.value;
-
-    const url = `cropped.html?top=${top}&left=${left}&width=${width}&height=${height}`;
-    document.getElementById("outputLink").innerHTML =
-        `<a href="${url}" target="_blank">${url}</a>`;
+function generate(){
+    const url = `cropped.html?top=${top.value}&left=${left.value}&bottom=${bottom.value}&right=${right.value}&zoom=${zoom.value}`;
+    result.innerHTML = `<a href="${url}" target="_blank" style="color:#00ffcc">${url}</a>`;
 }
 
-updateCrop();
+update();
 
 </script>
 
