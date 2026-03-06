@@ -1,44 +1,435 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Direct Scoreboard Embed</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nepal Live Vote Count | By Prakriti Pandey 1</title>
+  <style>
+    :root {
+      --bg1: #07111f;
+      --bg2: #10233f;
+      --card: rgba(255,255,255,0.08);
+      --border: rgba(255,255,255,0.14);
+      --text: #f5f7fb;
+      --muted: #b9c4d6;
+      --accent: #e11d48;
+      --accent2: #2563eb;
+      --gold: #fbbf24;
+      --shadow: 0 20px 60px rgba(0,0,0,0.35);
+    }
 
-<style>
-body {
-    margin: 0;
-    overflow: hidden;
-    background-color: transparent;
-}
+    * { box-sizing: border-box; }
 
-#container {
-    width: 800px; /* Your cropped width */
-    height: 450px; /* Your cropped height */
-    overflow: hidden;
-    position: relative;
-}
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(225,29,72,0.25), transparent 25%),
+        radial-gradient(circle at top right, rgba(37,99,235,0.25), transparent 30%),
+        linear-gradient(135deg, var(--bg1), var(--bg2));
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
 
-#iframe {
-    position: absolute;
-    top: -274px;   /* Adjust top offset */
-    left: -217px;  /* Adjust left offset */
-    width: 1400px; /* Original width of the page */
-    height: 2500px; /* Original height of the page */
-    transform: scale(0.89); /* Zoom out to adjust */
-    transform-origin: top left;
-    border: none;
-}
-</style>
+    .ticker {
+      width: 100%;
+      background: linear-gradient(90deg, var(--accent), #be123c);
+      color: white;
+      padding: 10px 0;
+      overflow: hidden;
+      white-space: nowrap;
+      border-bottom: 1px solid rgba(255,255,255,0.15);
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .ticker span {
+      display: inline-block;
+      padding-left: 100%;
+      animation: scroll 18s linear infinite;
+    }
+
+    @keyframes scroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-100%); }
+    }
+
+    .container {
+      width: min(1200px, 92%);
+      margin: 0 auto;
+      padding: 24px 0 60px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 24px;
+      align-items: center;
+      padding: 28px 0 20px;
+    }
+
+    .hero-card, .stats-card, .video-card, .info-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-card {
+      padding: 34px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card::after {
+      content: "LIVE";
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      background: var(--accent);
+      color: white;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      box-shadow: 0 0 25px rgba(225,29,72,0.45);
+      animation: pulse 1.4s infinite;
+    }
+
+    @keyframes pulse {
+      0%,100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.08); opacity: 0.86; }
+    }
+
+    .eyebrow {
+      display: inline-block;
+      padding: 8px 14px;
+      background: rgba(251,191,36,0.14);
+      border: 1px solid rgba(251,191,36,0.35);
+      color: #fde68a;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 5vw, 4rem);
+      line-height: 1.05;
+      margin: 0 0 14px;
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 1.05rem;
+      line-height: 1.7;
+      margin: 0 0 22px;
+      max-width: 700px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .btn {
+      text-decoration: none;
+      padding: 14px 20px;
+      border-radius: 14px;
+      font-weight: 700;
+      transition: 0.25s ease;
+      display: inline-block;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), #fb7185);
+      color: white;
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.06);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .stats-card {
+      padding: 26px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .stat-box {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 18px;
+      padding: 18px;
+    }
+
+    .stat-label {
+      color: var(--muted);
+      font-size: 0.92rem;
+      margin-bottom: 6px;
+    }
+
+    .stat-value {
+      font-size: 1.8rem;
+      font-weight: 800;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 24px;
+      margin-top: 10px;
+    }
+
+    .video-card {
+      padding: 18px;
+    }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .section-title h2 {
+      margin: 0;
+      font-size: 1.5rem;
+    }
+
+    .live-dot {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #fecdd3;
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    .live-dot::before {
+      content: "";
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #ef4444;
+      box-shadow: 0 0 16px #ef4444;
+      animation: pulse 1.3s infinite;
+    }
+
+    .video-wrap {
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%;
+      overflow: hidden;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: #000;
+    }
+
+    .video-wrap iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    .sidebar {
+      display: grid;
+      gap: 18px;
+    }
+
+    .info-card {
+      padding: 20px;
+    }
+
+    .info-card h3 {
+      margin-top: 0;
+      margin-bottom: 12px;
+      font-size: 1.15rem;
+    }
+
+    .info-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .info-item {
+      padding: 14px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .info-item strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 0.98rem;
+    }
+
+    .muted {
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 0.95rem;
+    }
+
+    .countdown {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .count-box {
+      flex: 1 1 90px;
+      min-width: 80px;
+      text-align: center;
+      padding: 14px 10px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .count-box .num {
+      font-size: 1.6rem;
+      font-weight: 800;
+      display: block;
+    }
+
+    .count-box .txt {
+      color: var(--muted);
+      font-size: 0.85rem;
+      margin-top: 4px;
+    }
+
+    footer {
+      text-align: center;
+      color: var(--muted);
+      padding-top: 30px;
+      font-size: 0.92rem;
+    }
+
+    @media (max-width: 900px) {
+      .hero, .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-card, .stats-card, .video-card, .info-card {
+        border-radius: 20px;
+      }
+    }
+  </style>
 </head>
-
 <body>
+  <div class="ticker">
+    <span>🇳🇵 Nepal Live Vote Count • Live coverage • Real-time stream • By Prakriti Pandey 1 • Stay tuned for every update •</span>
+  </div>
 
-<div id="container">
-    <iframe 
-        id="iframe" 
-        src="https://cricketfastliveline.in/live-score/afg-vs-can-39th-match-t20-icc-mens-t20-world-cup-2026/a-rz--cricket--h21993773127846465576">
-    </iframe>
-</div>
+  <div class="container">
+    <section class="hero">
+      <div class="hero-card">
+        <div class="eyebrow">Nepal Election Coverage</div>
+        <h1>Live Vote Count of Nepal</h1>
+        <p>
+          Watch the live election vote count stream with a bold, clean, and engaging layout.
+          This page is designed to keep viewers locked in with a live feel, quick highlights,
+          and a strong headline presence for your audience.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#live-stream">Watch Live</a>
+          <a class="btn btn-secondary" href="#updates">Latest Updates</a>
+        </div>
+      </div>
 
+      <div class="stats-card">
+        <div class="stat-box">
+          <div class="stat-label">Channel / Brand</div>
+          <div class="stat-value">Prakriti Pandey 1</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">Coverage Status</div>
+          <div class="stat-value">LIVE NOW</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">Region</div>
+          <div class="stat-value">Nepal 🇳🇵</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="layout">
+      <div class="video-card" id="live-stream">
+        <div class="section-title">
+          <h2>Live Vote Count Stream</h2>
+          <div class="live-dot">Streaming</div>
+        </div>
+        <div class="video-wrap">
+          <iframe src="https://www.youtube.com/embed/PvWovbxi7A8?autoplay=1&mute=1&rel=0&modestbranding=1&playsinline=1" title="Nepal Live Vote Count Stream" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+      </div>
+
+      <aside class="sidebar" id="updates">
+        <div class="info-card">
+          <h3>Live Update Panel</h3>
+          <div class="info-list">
+            <div class="info-item">
+              <strong>Breaking</strong>
+              <div class="muted">Vote counting updates are being streamed live. Keep refreshing your content and headlines for the most current numbers.</div>
+            </div>
+            <div class="info-item">
+              <strong>Viewer Hook</strong>
+              <div class="muted">Use this page as your central live hub for audience attention, stream watch time, and election-night energy.</div>
+            </div>
+            <div class="info-item">
+              <strong>Presentation Style</strong>
+              <div class="muted">Clean glassmorphism cards, moving ticker, live badge, and responsive video layout for a strong modern look.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-card">
+          <h3>Countdown Style Widget</h3>
+          <div class="muted">A visual timer area to make the page feel more active and less boring.</div>
+          <div class="countdown">
+            <div class="count-box"><span class="num" id="hours">00</span><div class="txt">Hours</div></div>
+            <div class="count-box"><span class="num" id="minutes">00</span><div class="txt">Minutes</div></div>
+            <div class="count-box"><span class="num" id="seconds">00</span><div class="txt">Seconds</div></div>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <footer>
+      © 2026 Nepal Live Vote Count • Created for Prakriti Pandey 1
+    </footer>
+  </div>
+
+  <script>
+    function updateClock() {
+      const now = new Date();
+      const h = String(now.getHours()).padStart(2, '0');
+      const m = String(now.getMinutes()).padStart(2, '0');
+      const s = String(now.getSeconds()).padStart(2, '0');
+
+      document.getElementById('hours').textContent = h;
+      document.getElementById('minutes').textContent = m;
+      document.getElementById('seconds').textContent = s;
+    }
+
+    updateClock();
+    setInterval(updateClock, 1000);
+  </script>
 </body>
 </html>
