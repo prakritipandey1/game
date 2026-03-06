@@ -3,433 +3,443 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Nepal Live Vote Count | By Prakriti Pandey 1</title>
+  <title>Nepal Live Vote Count</title>
   <style>
-    :root {
-      --bg1: #07111f;
-      --bg2: #10233f;
-      --card: rgba(255,255,255,0.08);
-      --border: rgba(255,255,255,0.14);
-      --text: #f5f7fb;
-      --muted: #b9c4d6;
-      --accent: #e11d48;
-      --accent2: #2563eb;
-      --gold: #fbbf24;
-      --shadow: 0 20px 60px rgba(0,0,0,0.35);
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
 
-    * { box-sizing: border-box; }
+    :root {
+      --red: #e11d48;
+      --red2: #fb7185;
+      --blue: #1d4ed8;
+      --blue2: #60a5fa;
+      --glass: rgba(8, 15, 32, 0.72);
+      --glass-2: rgba(255, 255, 255, 0.08);
+      --border: rgba(255, 255, 255, 0.14);
+      --text: #ffffff;
+      --muted: rgba(255,255,255,0.78);
+      --shadow: 0 18px 50px rgba(0,0,0,0.35);
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #000;
+      font-family: Arial, Helvetica, sans-serif;
+    }
 
     body {
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
       background:
-        radial-gradient(circle at top left, rgba(225,29,72,0.25), transparent 25%),
-        radial-gradient(circle at top right, rgba(37,99,235,0.25), transparent 30%),
-        linear-gradient(135deg, var(--bg1), var(--bg2));
-      min-height: 100vh;
-      overflow-x: hidden;
+        radial-gradient(circle at top left, rgba(225,29,72,0.25), transparent 28%),
+        radial-gradient(circle at top right, rgba(29,78,216,0.22), transparent 30%),
+        #000;
     }
 
-    .ticker {
-      width: 100%;
-      background: linear-gradient(90deg, var(--accent), #be123c);
-      color: white;
-      padding: 10px 0;
-      overflow: hidden;
-      white-space: nowrap;
-      border-bottom: 1px solid rgba(255,255,255,0.15);
-      font-weight: 700;
-      letter-spacing: 0.5px;
-    }
-
-    .ticker span {
-      display: inline-block;
-      padding-left: 100%;
-      animation: scroll 18s linear infinite;
-    }
-
-    @keyframes scroll {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-100%); }
-    }
-
-    .container {
-      width: min(1200px, 92%);
-      margin: 0 auto;
-      padding: 24px 0 60px;
-    }
-
-    .hero {
-      display: grid;
-      grid-template-columns: 1.2fr 0.8fr;
-      gap: 24px;
-      align-items: center;
-      padding: 28px 0 20px;
-    }
-
-    .hero-card, .stats-card, .video-card, .info-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 24px;
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      box-shadow: var(--shadow);
-    }
-
-    .hero-card {
-      padding: 34px;
+    .frame {
       position: relative;
+      width: 100vw;
+      height: 100vh;
+      aspect-ratio: 16 / 9;
+      background: #000;
       overflow: hidden;
-    }
-
-    .hero-card::after {
-      content: "LIVE";
-      position: absolute;
-      top: 18px;
-      right: 18px;
-      background: var(--accent);
-      color: white;
-      padding: 8px 14px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 800;
-      box-shadow: 0 0 25px rgba(225,29,72,0.45);
-      animation: pulse 1.4s infinite;
-    }
-
-    @keyframes pulse {
-      0%,100% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.08); opacity: 0.86; }
-    }
-
-    .eyebrow {
-      display: inline-block;
-      padding: 8px 14px;
-      background: rgba(251,191,36,0.14);
-      border: 1px solid rgba(251,191,36,0.35);
-      color: #fde68a;
-      border-radius: 999px;
-      font-size: 13px;
-      font-weight: 700;
-      margin-bottom: 14px;
-    }
-
-    h1 {
-      font-size: clamp(2rem, 5vw, 4rem);
-      line-height: 1.05;
-      margin: 0 0 14px;
-    }
-
-    .hero p {
-      color: var(--muted);
-      font-size: 1.05rem;
-      line-height: 1.7;
-      margin: 0 0 22px;
-      max-width: 700px;
-    }
-
-    .hero-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 8px;
-    }
-
-    .btn {
-      text-decoration: none;
-      padding: 14px 20px;
-      border-radius: 14px;
-      font-weight: 700;
-      transition: 0.25s ease;
-      display: inline-block;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, var(--accent), #fb7185);
-      color: white;
-    }
-
-    .btn-secondary {
-      background: rgba(255,255,255,0.06);
-      color: white;
-      border: 1px solid rgba(255,255,255,0.12);
-    }
-
-    .btn:hover {
-      transform: translateY(-2px);
-    }
-
-    .stats-card {
-      padding: 26px;
-      display: grid;
-      gap: 16px;
-    }
-
-    .stat-box {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 18px;
-      padding: 18px;
-    }
-
-    .stat-label {
-      color: var(--muted);
-      font-size: 0.92rem;
-      margin-bottom: 6px;
-    }
-
-    .stat-value {
-      font-size: 1.8rem;
-      font-weight: 800;
-    }
-
-    .layout {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 24px;
-      margin-top: 10px;
-    }
-
-    .video-card {
-      padding: 18px;
-    }
-
-    .section-title {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 14px;
-    }
-
-    .section-title h2 {
-      margin: 0;
-      font-size: 1.5rem;
-    }
-
-    .live-dot {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      color: #fecdd3;
-      font-size: 0.95rem;
-      font-weight: 700;
-    }
-
-    .live-dot::before {
-      content: "";
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: #ef4444;
-      box-shadow: 0 0 16px #ef4444;
-      animation: pulse 1.3s infinite;
     }
 
     .video-wrap {
-      position: relative;
-      width: 100%;
-      padding-top: 56.25%;
-      overflow: hidden;
-      border-radius: 20px;
-      border: 1px solid rgba(255,255,255,0.1);
-      background: #000;
+      position: absolute;
+      inset: 0;
     }
 
-    .video-wrap iframe {
+    iframe {
       position: absolute;
       inset: 0;
       width: 100%;
       height: 100%;
       border: 0;
+      background: #000;
+    }
+
+    .topbar {
+      position: absolute;
+      top: 1.1vw;
+      left: 1.1vw;
+      right: 1.1vw;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1vw;
+      pointer-events: none;
+    }
+
+    .brand, .status-group {
+      display: flex;
+      align-items: center;
+      gap: 0.7vw;
+    }
+
+    .brand-box, .status-box {
+      background: var(--glass);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      color: var(--text);
+      border-radius: 1vw;
+      padding: 0.75vw 1vw;
+    }
+
+    .brand-box {
+      display: flex;
+      align-items: center;
+      gap: 0.8vw;
+      min-width: 20vw;
+    }
+
+    .flag {
+      font-size: 1.55vw;
+      line-height: 1;
+    }
+
+    .brand-text small,
+    .status-box small,
+    .sidebar-card small {
+      display: block;
+      color: var(--muted);
+      font-size: 0.66vw;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 0.15vw;
+    }
+
+    .brand-text strong,
+    .status-box strong,
+    .sidebar-card strong {
+      display: block;
+      font-size: 1vw;
+      line-height: 1.15;
+      font-weight: 800;
+    }
+
+    .live-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45vw;
+      background: linear-gradient(135deg, var(--red), var(--red2));
+      color: #fff;
+      border-radius: 999px;
+      padding: 0.58vw 0.95vw;
+      font-size: 0.8vw;
+      font-weight: 800;
+      box-shadow: 0 0 24px rgba(225,29,72,0.35);
+    }
+
+    .live-pill::before {
+      content: "";
+      width: 0.5vw;
+      height: 0.5vw;
+      border-radius: 50%;
+      background: #fff;
+      animation: pulse 1.3s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.28); opacity: 0.65; }
     }
 
     .sidebar {
-      display: grid;
-      gap: 18px;
-    }
-
-    .info-card {
-      padding: 20px;
-    }
-
-    .info-card h3 {
-      margin-top: 0;
-      margin-bottom: 12px;
-      font-size: 1.15rem;
-    }
-
-    .info-list {
-      display: grid;
-      gap: 12px;
-    }
-
-    .info-item {
-      padding: 14px;
-      border-radius: 16px;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.08);
-    }
-
-    .info-item strong {
-      display: block;
-      margin-bottom: 6px;
-      font-size: 0.98rem;
-    }
-
-    .muted {
-      color: var(--muted);
-      line-height: 1.6;
-      font-size: 0.95rem;
-    }
-
-    .countdown {
+      position: absolute;
+      top: 6vw;
+      right: 1.1vw;
+      width: 18vw;
       display: flex;
-      gap: 12px;
+      flex-direction: column;
+      gap: 0.8vw;
+      pointer-events: none;
+    }
+
+    .sidebar-card {
+      background: var(--glass);
+      border: 1px solid var(--border);
+      border-radius: 1vw;
+      padding: 0.9vw 1vw;
+      color: #fff;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .sidebar-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.06), transparent 55%);
+      pointer-events: none;
+    }
+
+    .cta-main {
+      background: linear-gradient(160deg, rgba(225,29,72,0.82), rgba(29,78,216,0.76));
+    }
+
+    .cta-line {
+      margin-top: 0.55vw;
+      font-size: 0.82vw;
+      color: rgba(255,255,255,0.95);
+      line-height: 1.45;
+      font-weight: 700;
+    }
+
+    .cta-tags {
+      margin-top: 0.75vw;
+      display: flex;
       flex-wrap: wrap;
-      margin-top: 8px;
+      gap: 0.45vw;
     }
 
-    .count-box {
-      flex: 1 1 90px;
-      min-width: 80px;
-      text-align: center;
-      padding: 14px 10px;
-      border-radius: 16px;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.08);
-    }
-
-    .count-box .num {
-      font-size: 1.6rem;
+    .tag {
+      padding: 0.34vw 0.6vw;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.08);
+      font-size: 0.66vw;
       font-weight: 800;
-      display: block;
+      letter-spacing: 0.03em;
     }
 
-    .count-box .txt {
+    .mini-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.55vw;
+      margin-top: 0.7vw;
+    }
+
+    .mini-box {
+      background: var(--glass-2);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 0.8vw;
+      padding: 0.65vw;
+    }
+
+    .mini-box .big {
+      font-size: 1vw;
+      font-weight: 800;
+      line-height: 1.1;
+    }
+
+    .mini-box .sub {
+      margin-top: 0.16vw;
+      font-size: 0.64vw;
       color: var(--muted);
-      font-size: 0.85rem;
-      margin-top: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
 
-    footer {
-      text-align: center;
-      color: var(--muted);
-      padding-top: 30px;
-      font-size: 0.92rem;
+    .ticker {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 4.2vw;
+      display: flex;
+      align-items: stretch;
+      z-index: 5;
+      pointer-events: none;
     }
 
-    @media (max-width: 900px) {
-      .hero, .layout {
-        grid-template-columns: 1fr;
+    .ticker-label {
+      min-width: 12.5vw;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--red), #be123c);
+      color: #fff;
+      font-size: 1vw;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      box-shadow: 0 -10px 30px rgba(0,0,0,0.22);
+    }
+
+    .ticker-track {
+      flex: 1;
+      overflow: hidden;
+      background: rgba(4, 10, 24, 0.92);
+      border-top: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      align-items: center;
+    }
+
+    .ticker-move {
+      white-space: nowrap;
+      color: #fff;
+      font-weight: 800;
+      font-size: 0.92vw;
+      padding-left: 100%;
+      animation: tickerMove 24s linear infinite;
+    }
+
+    .ticker-move span {
+      margin-right: 3.5vw;
+      color: rgba(255,255,255,0.95);
+    }
+
+    @keyframes tickerMove {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-100%); }
+    }
+
+    .bottom-left {
+      position: absolute;
+      left: 1.1vw;
+      bottom: 5.3vw;
+      display: flex;
+      gap: 0.7vw;
+      pointer-events: none;
+    }
+
+    .chip {
+      background: var(--glass);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 0.7vw 1vw;
+      color: #fff;
+      font-weight: 800;
+      font-size: 0.8vw;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+
+    .follow {
+      background: linear-gradient(135deg, rgba(34,197,94,0.9), rgba(16,185,129,0.85));
+      border: none;
+    }
+
+    .follow strong {
+      margin-left: 0.2vw;
+    }
+
+    .shade {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(to top, rgba(0,0,0,0.34) 0%, rgba(0,0,0,0.02) 36%, rgba(0,0,0,0.18) 100%),
+        linear-gradient(to left, rgba(0,0,0,0.22) 0%, transparent 30%);
+      pointer-events: none;
+    }
+
+    @media (min-aspect-ratio: 16/9) {
+      .frame {
+        width: 100vw;
+        height: 56.25vw;
+        max-height: 100vh;
       }
+    }
 
-      .hero-card, .stats-card, .video-card, .info-card {
-        border-radius: 20px;
+    @media (max-aspect-ratio: 16/9) {
+      .frame {
+        width: 177.7778vh;
+        height: 100vh;
+        max-width: 100vw;
       }
     }
   </style>
 </head>
 <body>
-  <div class="ticker">
-    <span>🇳🇵 Nepal Live Vote Count • Live coverage • Real-time stream • By Prakriti Pandey 1 • Stay tuned for every update •</span>
-  </div>
+  <div class="frame">
+    <div class="video-wrap">
+      <iframe
+        src="https://www.youtube.com/embed/PvWovbxi7A8?autoplay=1&mute=1&rel=0&modestbranding=1&playsinline=1&controls=1"
+        title="Nepal Live Vote Count"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerpolicy="strict-origin-when-cross-origin"
+        allowfullscreen>
+      </iframe>
+    </div>
 
-  <div class="container">
-    <section class="hero">
-      <div class="hero-card">
-        <div class="eyebrow">Nepal Election Coverage</div>
-        <h1>Live Vote Count of Nepal</h1>
-        <p>
-          Watch the live election vote count stream with a bold, clean, and engaging layout.
-          This page is designed to keep viewers locked in with a live feel, quick highlights,
-          and a strong headline presence for your audience.
-        </p>
-        <div class="hero-actions">
-          <a class="btn btn-primary" href="#live-stream">Watch Live</a>
-          <a class="btn btn-secondary" href="#updates">Latest Updates</a>
-        </div>
-      </div>
+    <div class="shade"></div>
 
-      <div class="stats-card">
-        <div class="stat-box">
-          <div class="stat-label">Channel / Brand</div>
-          <div class="stat-value">Prakriti Pandey 1</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-label">Coverage Status</div>
-          <div class="stat-value">LIVE NOW</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-label">Region</div>
-          <div class="stat-value">Nepal 🇳🇵</div>
-        </div>
-      </div>
-    </section>
-
-    <section class="layout">
-      <div class="video-card" id="live-stream">
-        <div class="section-title">
-          <h2>Live Vote Count Stream</h2>
-          <div class="live-dot">Streaming</div>
-        </div>
-        <div class="video-wrap">
-          <iframe src="https://www.youtube.com/embed/PvWovbxi7A8?autoplay=1&mute=1&rel=0&modestbranding=1&playsinline=1" title="Nepal Live Vote Count Stream" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-        </div>
-      </div>
-
-      <aside class="sidebar" id="updates">
-        <div class="info-card">
-          <h3>Live Update Panel</h3>
-          <div class="info-list">
-            <div class="info-item">
-              <strong>Breaking</strong>
-              <div class="muted">Vote counting updates are being streamed live. Keep refreshing your content and headlines for the most current numbers.</div>
-            </div>
-            <div class="info-item">
-              <strong>Viewer Hook</strong>
-              <div class="muted">Use this page as your central live hub for audience attention, stream watch time, and election-night energy.</div>
-            </div>
-            <div class="info-item">
-              <strong>Presentation Style</strong>
-              <div class="muted">Clean glassmorphism cards, moving ticker, live badge, and responsive video layout for a strong modern look.</div>
-            </div>
+    <div class="topbar">
+      <div class="brand">
+        <div class="brand-box">
+          <div class="flag">🇳🇵</div>
+          <div class="brand-text">
+            <small>Nepal Election Coverage</small>
+            <strong>Live Vote Count</strong>
           </div>
         </div>
+      </div>
 
-        <div class="info-card">
-          <h3>Countdown Style Widget</h3>
-          <div class="muted">A visual timer area to make the page feel more active and less boring.</div>
-          <div class="countdown">
-            <div class="count-box"><span class="num" id="hours">00</span><div class="txt">Hours</div></div>
-            <div class="count-box"><span class="num" id="minutes">00</span><div class="txt">Minutes</div></div>
-            <div class="count-box"><span class="num" id="seconds">00</span><div class="txt">Seconds</div></div>
+      <div class="status-group">
+        <div class="status-box">
+          <small>Presented By</small>
+          <strong>Prakriti Pandey 1</strong>
+        </div>
+        <div class="live-pill">LIVE</div>
+      </div>
+    </div>
+
+    <div class="sidebar">
+      <div class="sidebar-card cta-main">
+        <small>Kick Live</small>
+        <strong>Follow For Instant Results</strong>
+        <div class="cta-line">Stay locked in for live counting, rapid updates, and nonstop election coverage.</div>
+        <div class="cta-tags">
+          <div class="tag">FOLLOW</div>
+          <div class="tag">LIVE CHAT</div>
+          <div class="tag">REAL-TIME</div>
+        </div>
+      </div>
+
+      <div class="sidebar-card">
+        <small>Coverage Hub</small>
+        <strong>Election Night Dashboard</strong>
+        <div class="mini-stats">
+          <div class="mini-box">
+            <div class="big">LIVE</div>
+            <div class="sub">Status</div>
+          </div>
+          <div class="mini-box">
+            <div class="big">24/7</div>
+            <div class="sub">Updates</div>
+          </div>
+          <div class="mini-box">
+            <div class="big">🇳🇵</div>
+            <div class="sub">Nepal</div>
+          </div>
+          <div class="mini-box">
+            <div class="big">HD</div>
+            <div class="sub">Feed</div>
           </div>
         </div>
-      </aside>
-    </section>
+      </div>
+    </div>
 
-    <footer>
-      © 2026 Nepal Live Vote Count • Created for Prakriti Pandey 1
-    </footer>
+    <div class="bottom-left">
+      <div class="chip follow">★ <strong>Follow Now</strong></div>
+      <div class="chip">Prakriti Pandey 1</div>
+    </div>
+
+    <div class="ticker">
+      <div class="ticker-label">Live Update</div>
+      <div class="ticker-track">
+        <div class="ticker-move">
+          <span>नेपाल लाइभ भोट काउन्ट</span>
+          <span>Real-time election coverage</span>
+          <span>Follow Prakriti Pandey 1 for live result updates</span>
+          <span>Stay tuned for breaking vote count moments</span>
+          <span>Live coverage continues</span>
+        </div>
+      </div>
+    </div>
   </div>
-
-  <script>
-    function updateClock() {
-      const now = new Date();
-      const h = String(now.getHours()).padStart(2, '0');
-      const m = String(now.getMinutes()).padStart(2, '0');
-      const s = String(now.getSeconds()).padStart(2, '0');
-
-      document.getElementById('hours').textContent = h;
-      document.getElementById('minutes').textContent = m;
-      document.getElementById('seconds').textContent = s;
-    }
-
-    updateClock();
-    setInterval(updateClock, 1000);
-  </script>
 </body>
 </html>
